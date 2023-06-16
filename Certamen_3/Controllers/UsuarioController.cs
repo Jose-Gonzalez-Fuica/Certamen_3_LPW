@@ -95,7 +95,8 @@ namespace Certamen_3.Controllers
             response.Success = true;
             response.Message = "Guardado con éxito";
 
-            return CreatedAtAction("GetUsuario", new { id = usuarioObj.Id }, usuarioObj);
+            return Ok(response);
+            //return CreatedAtAction("GetUsuario", new { id = usuarioObj.Id }, usuarioObj);
         }
 
         [HttpDelete("{id}")]
@@ -126,7 +127,7 @@ namespace Certamen_3.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Etiquetum>> PutEtiqueta(int id, string? nombreUsuario, string? contrasena,
+        public async Task<ActionResult<Etiquetum>> PutUsuario(int id, string? nombreUsuario, string? contrasena,
            int? telefono, string? correo, string? apellidos, string? nombres, int? montoBilletera)
         {
             Response response = new();
@@ -158,8 +159,8 @@ namespace Certamen_3.Controllers
 
             }
 
-
-            return CreatedAtAction("GetUsuario", new { id = usuarioObj.Id }, usuarioObj);
+            return Ok(response);
+            //return CreatedAtAction("GetUsuario", new { id = usuarioObj.Id }, usuarioObj);
         }
     }
 }
