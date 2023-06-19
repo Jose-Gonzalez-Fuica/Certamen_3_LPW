@@ -162,5 +162,7 @@ namespace Certamen_3.Controllers
             return Ok(response);
             //return CreatedAtAction("GetUsuario", new { id = usuarioObj.Id }, usuarioObj);
         }
+
+
     }
 }
