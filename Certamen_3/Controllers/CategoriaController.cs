@@ -29,6 +29,7 @@ namespace Certamen_3.Controllers
                                            x.Nombre,
                                            x.Descripcion,
                                            x.FechaCreacion,
+                                           x.IdGrupo,
                                            Grupo=x.IdGrupoNavigation.Nombre,
                                            x.Habilitada,
                                            x.MontoEstimacion,
@@ -90,7 +91,7 @@ namespace Certamen_3.Controllers
                 if (movimientos != null)
                 {
                     response.Message = "No se puede eliminar la categoria por tener movimientos";
-                    return NotFound(response);
+                    return Ok(response);
                 }
                 else
                 {
@@ -103,17 +104,17 @@ namespace Certamen_3.Controllers
 
             }
             response.Message = "No se encuntra el id";
-            return NotFound(response);
+            return Ok(response);
         }
 
         [HttpPost]
         public async Task<ActionResult<Categorium>> PostCategoria(string nombre, string descripcion,
-           DateTime fechaCreacion, int id_grupo, bool habilitada, int montoEstimacion)
+            int id_grupo, bool habilitada, int montoEstimacion)
         {
             Categorium categoriaObj = new();
             categoriaObj.Nombre = nombre;
             categoriaObj.Descripcion = descripcion;
-            categoriaObj.FechaCreacion = fechaCreacion;
+            categoriaObj.FechaCreacion = DateTime.Now;
             categoriaObj.IdGrupo = id_grupo;
             categoriaObj.Habilitada = habilitada;
             categoriaObj.MontoEstimacion = montoEstimacion;

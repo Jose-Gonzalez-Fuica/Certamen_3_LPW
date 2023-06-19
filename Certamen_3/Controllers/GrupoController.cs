@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data.SqlTypes;
+
 namespace Certamen_3.Controllers
 {
     [Route("api/[controller]")]
@@ -79,22 +81,41 @@ namespace Certamen_3.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Grupo>> PostGrupos(string nombre, string descripcion,
-           DateTime fechaCreacion, int id_usuario)
+        public async Task<ActionResult<Grupo>> PostGrupos(string nombre, string descripcion)
         {
-            Grupo grupoObj = new();
-            grupoObj.Nombre = nombre;
-            grupoObj.Descripcion = descripcion;
-            grupoObj.FechaCreacion = fechaCreacion;
-            grupoObj.IdUsuario = id_usuario;
-            db.Grupos.Add(grupoObj);
-            await db.SaveChangesAsync();
-            Response response = new();
-            response.Success = true;
-            response.Message = "Guardado con éxito";
 
-            return Ok(response);
-            //return CreatedAtAction("GetUsuario", new { id = grupoObj.Id }, grupoObj);
+            try
+            {
+                var usuario = db.Usuarios.FirstOrDefault();
+                Response response = new();
+
+                if (usuario != null)
+                {
+                    Grupo grupoObj = new();
+                    grupoObj.Nombre = nombre;
+                    grupoObj.Descripcion = descripcion;
+                    grupoObj.FechaCreacion = DateTime.Now;
+                    grupoObj.IdUsuario = usuario.Id;
+                    db.Grupos.Add(grupoObj);
+                    await db.SaveChangesAsync();
+                    response.Success = true;
+                    response.Message = "Guardado con éxito";
+
+                    //return CreatedAtAction("GetUsuario", new { id = grupoObj.Id }, grupoObj);
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "No hay Usuarios registrados";
+
+                }
+
+                return Ok(response);
+            }
+            catch(Exception ex) 
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpDelete("{id}")]
@@ -108,7 +129,7 @@ namespace Certamen_3.Controllers
                 if (categorias != null)
                 {
                     response.Message = "No se puede eliminar el grupo por tener categorias";
-                    return NotFound(response);
+                    return Ok(response);
                 }
                 else
                 {
@@ -121,9 +142,8 @@ namespace Certamen_3.Controllers
 
             }
             response.Message = "No se encuntra el id";
-            return NotFound(response);
+            return Ok(response);
         }
-
 
 
         [HttpPut]

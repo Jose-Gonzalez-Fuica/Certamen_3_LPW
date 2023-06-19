@@ -87,8 +87,9 @@ namespace Certamen_3.Controllers
             Response response = new();
             response.Success = true;
             response.Message = "Guardado con éxito";
+            return Ok(response);
 
-            return CreatedAtAction("GetEtiqueta", new { id = etiquetaObj.Id }, etiquetaObj);
+            //return CreatedAtAction("GetEtiqueta", new { id = etiquetaObj.Id }, etiquetaObj);
         }
 
         [HttpDelete("{id}")]
@@ -103,7 +104,7 @@ namespace Certamen_3.Controllers
                 {
 
                     response.Message = "No se puede eliminar la etiqueta por tener movimientos";
-                    return NotFound(response);
+                    return Ok(response);
                 }
                 else
                 {
@@ -116,7 +117,7 @@ namespace Certamen_3.Controllers
               
             }
             response.Message = "No se encuntra el id";
-            return NotFound(response);
+            return Ok(response);
         }
 
 

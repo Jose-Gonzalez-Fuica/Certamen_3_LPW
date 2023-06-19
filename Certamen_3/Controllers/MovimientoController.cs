@@ -32,8 +32,10 @@ namespace Certamen_3.Controllers
                                            x.Imagen,
                                            x.FechaRegistro,
                                            x.Observacion,
+                                           x.IdCategoria,
                                            Categoria=x.IdCategoriaNavigation.Nombre,
                                            x.IdEtiquetaNavigation.Etiqueta,
+                                           x.IdEtiqueta
                                        }).ToListAsync();
                 if (movimientos != null)
                 {
@@ -100,7 +102,7 @@ namespace Certamen_3.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Movimiento>> PostMovimiento(string tipo,string nombreDescriptivo,int monto,string descripcion,string imagen,DateTime fechaRegistro,
+        public async Task<ActionResult<Movimiento>> PostMovimiento(string tipo,string nombreDescriptivo,int monto,string descripcion,
             string observacion,int id_categoria, int id_etiqueta)
         {
             Movimiento movimentoObj = new();
@@ -108,8 +110,8 @@ namespace Certamen_3.Controllers
             movimentoObj.NombreDescriptivo = nombreDescriptivo;
             movimentoObj.Monto = monto;
             movimentoObj.Descripcion = descripcion;
-            movimentoObj.Imagen = imagen;
-            movimentoObj.FechaRegistro = fechaRegistro;
+            //movimentoObj.Imagen = imagen;
+            movimentoObj.FechaRegistro = DateTime.Now;
             movimentoObj.Observacion = observacion;
             movimentoObj.IdCategoria = id_categoria;
             movimentoObj.IdEtiqueta = id_etiqueta;

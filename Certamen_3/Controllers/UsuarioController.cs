@@ -110,7 +110,7 @@ namespace Certamen_3.Controllers
                 if(grupos != null)
                 {
                     response.Message = "No se puede eliminar el usuario por tener grupos";
-                    return NotFound(response);
+                    return Ok(response);
                 }
                 else
                 {
@@ -123,7 +123,7 @@ namespace Certamen_3.Controllers
                
             }
             response.Message = "No se encuntra el id";
-            return NotFound(response);
+            return Ok(response);
         }
 
         [HttpPut]
