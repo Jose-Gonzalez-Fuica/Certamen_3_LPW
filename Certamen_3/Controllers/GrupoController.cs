@@ -4,39 +4,41 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace Certamen_3.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
-    public class EtiquetaController : ControllerBase
+    public class GrupoController : ControllerBase
     {
         private readonly GestionGastosContext db = new();
+
         [HttpGet]
-        public async Task<IActionResult> GetEtiqueta()
+        public async Task<IActionResult> GetGrupos()
         {
             Response response = new();
             try
             {
-                if (db.Etiqueta == null)
+                if (db.Grupos == null)
                 {
                     response.Message = "La tabla no esta activa";
                     return NotFound(response);
                 }
-                var etiquetas = await db.Etiqueta.Select(
+                var grupos = await db.Grupos.Select(
                                        x => new
                                        {
                                            x.Id,
-                                           x.Etiqueta,
+                                           x.Nombre,
                                            x.Descripcion,
-                                           x.Color,
+                                           x.FechaCreacion,
+                                           x.IdUsuario,
+                                           x.IdUsuarioNavigation.NombreUsuario,
                                        }).ToListAsync();
-                if (etiquetas != null)
+                if (grupos != null)
                 {
-                    if (etiquetas.Count == 0)
+                    if (grupos.Count == 0)
                     {
                         response.Message = "No hay registros";
                     }
                     response.Success = true;
-                    response.Data = etiquetas;
+                    response.Data = grupos;
                 }
                 return Ok(response);
             }
@@ -48,14 +50,15 @@ namespace Certamen_3.Controllers
             }
         }
 
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEtiqueta(int id)
+        public async Task<IActionResult> GetGrupos(int id)
         {
             Response response = new();
             try
             {
-                var buscarEtiqueta = await db.Etiqueta.FindAsync(id);
-                if (buscarEtiqueta == null)
+                var buscarGrupo = await db.Grupos.FindAsync(id);
+                if (buscarGrupo == null)
                 {
                     response.Message = "No existe registros con ese id";
                     return NotFound(response);
@@ -63,7 +66,7 @@ namespace Certamen_3.Controllers
                 else
                 {
                     response.Success = true;
-                    response.Data = buscarEtiqueta;
+                    response.Data = buscarGrupo;
                 }
                 return Ok(response);
             }
@@ -74,79 +77,84 @@ namespace Certamen_3.Controllers
             }
         }
 
+
         [HttpPost]
-        public async Task<ActionResult<Etiquetum>> PostEtiqueta(string etiqueta, string descripcion,
-            string color)
+        public async Task<ActionResult<Grupo>> PostGrupos(string nombre, string descripcion,
+           DateTime fechaCreacion, int id_usuario)
         {
-            Etiquetum etiquetaObj = new();
-            etiquetaObj.Etiqueta = etiqueta;
-            etiquetaObj.Descripcion = descripcion;
-            etiquetaObj.Color = color;
-            db.Etiqueta.Add(etiquetaObj);
+            Grupo grupoObj = new();
+            grupoObj.Nombre = nombre;
+            grupoObj.Descripcion = descripcion;
+            grupoObj.FechaCreacion = fechaCreacion;
+            grupoObj.IdUsuario = id_usuario;
+            db.Grupos.Add(grupoObj);
             await db.SaveChangesAsync();
             Response response = new();
             response.Success = true;
             response.Message = "Guardado con éxito";
 
-            return CreatedAtAction("GetEtiqueta", new { id = etiquetaObj.Id }, etiquetaObj);
+            return Ok(response);
+            //return CreatedAtAction("GetUsuario", new { id = grupoObj.Id }, grupoObj);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEtiqueta(int id)
+        public async Task<IActionResult> DeleteGrupo(int id)
         {
             Response response = new();
-            var buscarEtiqueta = await db.Etiqueta.FindAsync(id);
-            if (buscarEtiqueta != null)
+            var buscarGrupos = await db.Grupos.FindAsync(id);
+            if (buscarGrupos != null)
             {
-                var movimientos = await db.Movimientos.FirstOrDefaultAsync(x => x.IdEtiqueta == id);
-                if (movimientos != null)
+                var categorias = await db.Categoria.FirstOrDefaultAsync(x => x.IdGrupo == id);
+                if (categorias != null)
                 {
-
-                    response.Message = "No se puede eliminar la etiqueta por tener movimientos";
+                    response.Message = "No se puede eliminar el grupo por tener categorias";
                     return NotFound(response);
                 }
                 else
                 {
-                    db.Remove(buscarEtiqueta);
+                    db.Remove(buscarGrupos);
                     await db.SaveChangesAsync();
-                    response.Message = "La Etiqueta se ha eliminado con éxito";
+                    response.Message = "El grupo se ha eliminado con éxito";
                     response.Success = true;
                     return Ok(response);
                 }
-              
+
             }
             response.Message = "No se encuntra el id";
             return NotFound(response);
         }
 
 
+
         [HttpPut]
-        public async Task<ActionResult<Etiquetum>> PutEtiqueta(int id,string? etiqueta, string? descripcion,
-            string? color)
+        public async Task<ActionResult<Grupo>> PutUsuario(int id, string? nombre, string? descripcion,
+           DateTime? fechaCreacion, int? id_usuario)
         {
             Response response = new();
-            var etiquetaObj = await db.Etiqueta.FindAsync(id);
-            if(etiquetaObj != null)
-                {
-                if(etiqueta != null)
-                etiquetaObj.Etiqueta = etiqueta;
+            var grupoObj = await db.Grupos.FindAsync(id);
+            if (grupoObj != null)
+            {
+                if (nombre != null)
+                    grupoObj.Nombre = nombre;
                 if(descripcion != null)
-                etiquetaObj.Descripcion = descripcion;
-                if(color != null)
-                etiquetaObj.Color = color;
+                    grupoObj.Descripcion = descripcion;
+                if(fechaCreacion != null)
+                    grupoObj.FechaCreacion = (DateTime)fechaCreacion;
+                if(id_usuario != null)
+                    grupoObj.IdUsuario = (int)id_usuario;
                 await db.SaveChangesAsync();
                 response.Success = true;
                 response.Message = "Actualizado con éxito";
             }
             else
-                {
+            {
                 response.Message = "No se encuntra el id";
                 return NotFound(response);
 
             }
-            
 
-            return CreatedAtAction("GetEtiqueta", new { id = etiquetaObj.Id }, etiquetaObj);
+            return Ok(response);
+            //return CreatedAtAction("GetUsuario", new { id = grupoObj.Id }, grupoObj);
         }
     }
 }

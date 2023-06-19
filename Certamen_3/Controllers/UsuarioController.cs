@@ -60,7 +60,7 @@ namespace Certamen_3.Controllers
                 var buscarUsuario = await db.Usuarios.FindAsync(id);
                 if (buscarUsuario == null)
                 {
-                    response.Message = "No existe registron con ese id";
+                    response.Message = "No existe registros con ese id";
                     return NotFound(response);
                 }
                 else
@@ -127,7 +127,7 @@ namespace Certamen_3.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Etiquetum>> PutUsuario(int id, string? nombreUsuario, string? contrasena,
+        public async Task<ActionResult<Usuario>> PutUsuario(int id, string? nombreUsuario, string? contrasena,
            int? telefono, string? correo, string? apellidos, string? nombres, int? montoBilletera)
         {
             Response response = new();
